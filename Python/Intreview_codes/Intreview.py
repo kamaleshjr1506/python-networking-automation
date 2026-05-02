@@ -55,7 +55,6 @@ for i in b:
 print(k)
 
 b = a.split(",")
-
 print(b)
 for i in b:
     if "-" in i:
@@ -298,3 +297,18 @@ students = {
         'grade': 'A+'
     }
 }
+
+
+a = """Interface            Lanes    Speed    MTU    FEC    Alias    Vlan    Oper    Admin        Type    Asym PFC
+-----------  ---------------  -------  -----  -----  -------  ------  ------  -------  ----------  ----------
+  Ethernet0          1,2,3,4     100G   9100     rs   Eth1/1   trunk      up       up      QSFP28         N/A
+  Ethernet4          5,6,7,8     100G   9100     rs   Eth2/1  hybrid    down       up         N/A         N/A
+  Ethernet8       9,10,11,12     100G   9100     rs   Eth3/1  hybrid    down       up         N/A         N/A"""
+
+b = a.splitlines(",")
+for i in b:
+    if "up" in i:
+        d = i.split()
+        print(d[7],d[8])
+
+ 
