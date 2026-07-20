@@ -1,0 +1,142 @@
+
+Scenario 1: Wired Network (Ethernet)
+User opens Google
+        │
+        ▼
++---------------------+
+| Application Layer   |
+| HTTP Request        |
++---------------------+
+        │
+        ▼
++---------------------+
+| Transport Layer     |
+| TCP                 |
+| Src Port            |
+| Dst Port            |
+| Seq Number          |
+| Ack Number          |
++---------------------+
+        │
+        ▼
++---------------------+
+| Network Layer       |
+| IP                  |
+| Src IP              |
+| Dst IP              |
++---------------------+
+        │
+        ▼
+Need to send outside subnet?
+        │
+      YES
+        │
+        ▼
+ARP Request
+"Who has Gateway IP?"
+        │
+        ▼
+Gateway replies with MAC
+        │
+        ▼
++---------------------+
+| Ethernet Frame      |
+| Src MAC             |
+| Dst MAC (Gateway)   |
++---------------------+
+        │
+        ▼
+══════════════════════════════
+ Ethernet Cable
+══════════════════════════════
+        │
+        ▼
+Switch
+        │
+(Looks only at Destination MAC)
+        │
+        ▼
+Router
+        │
+(Removes Ethernet Header)
+        │
+(Check Destination IP)
+        │
+(Create NEW Ethernet Header)
+        │
+        ▼
+Next Hop
+        │
+        ▼
+Destination PC
+        │
+(Removes all headers)
+        │
+        ▼
+Application receives data
+
+
+Scenario 2: Pure Wireless (Wi-Fi)
+User opens Google
+        │
+        ▼
++---------------------+
+| Application Layer   |
+| HTTP Request        |
++---------------------+
+        │
+        ▼
++---------------------+
+| Transport Layer     |
+| TCP                 |
++---------------------+
+        │
+        ▼
++---------------------+
+| Network Layer       |
+| IP                  |
++---------------------+
+        │
+        ▼
+Need to send outside subnet?
+        │
+      YES
+        │
+        ▼
+ARP Request
+"Who has Gateway IP?"
+        │
+        ▼
+Gateway replies with MAC
+        │
+        ▼
++--------------------------+
+| 802.11 Wi-Fi Frame       |
+| Src MAC                  |
+| Dst MAC (Gateway/AP)      |
++--------------------------+
+        │
+        ▼
+📶📶📶 Radio Waves 📶📶📶
+        │
+        ▼
+Access Point (AP)
+        │
+(Removes Wi-Fi Header)
+        │
+Converts to Ethernet
+        │
+        ▼
+Router
+        │
+(Check Destination IP)
+        │
+(Create New Layer-2 Header)
+        │
+        ▼
+Destination Network
+        │
+        ▼
+Destination Device
+
+

@@ -37,7 +37,8 @@ finally:
     obj.__exit__()
 
 
-Generators vs Iterators
+
+#Generators vs Iterators
 #👉 Generator: A function that yields values one at a time, allowing you to iterate over
 def gen():
     yield 1
@@ -71,3 +72,35 @@ a = A()
 print(a.x)
 a.x = 1000
 print(a.x)
+
+
+#Decorator 
+#A decorator is a function that modifies or extends the behavior of another function without changing its original source code.
+#A decorator should return a wrapper function:
+
+def my_dec(fun):
+    def wrapper():
+        print("strat")
+        #print("name",fun.__name__)  # special attribute to get the name of the function
+        fun()
+        print("end")
+    return(wrapper)
+
+
+@my_dec
+def display():
+    print("hello")
+display()
+
+
+#Dunder Methods (Magic Methods)
+#👉 Dunder methods, also known as magic methods, are special methods in Python that have double underscores at the beginning and end of their names. They allow you to define how objects of a class behave with respect to built-in operations.
+class sam:
+    def __init__(self,value):
+        self.value = value
+    
+    def __add__(self,other):
+        print(self.value + other.value)
+n1 = sam(1)
+n2 = sam(20)
+(n1+n2)

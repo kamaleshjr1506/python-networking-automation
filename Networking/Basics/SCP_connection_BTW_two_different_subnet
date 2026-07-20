@@ -1,0 +1,726 @@
+                 LAN 1                         LAN 2
+
++---------+      +---------+          +---------+      +---------+      +---------+
+|  PC1    |------| Switch  |----------| Router  |------| Switch  |------|  PC2    |
+|192.168.1.10    |         |          |         |      |         |      |192.168.2.20
++---------+      +---------+          +---------+      +---------+      +---------+
+
+PC1 IP: 192.168.1.10/24
+PC2 IP: 192.168.2.20/24
+
+Default Gateway (PC1): 192.168.1.1
+Router G0/0: 192.168.1.1
+Router G0/1: 192.168.2.1
+#################### Step 1: User Starts SCP #################### 
+
+On PC1:
+scp file.txt user@192.168.2.20:/home/user/
+
+At this point:
+
+SCP starts.
+SCP asks SSH to establish a secure connection.
+SSH requests a TCP connection to PC2 on TCP Port 22.
+No packets have been sent yet.
+#################### Step 2: TCP Creates the SYN #################### 
+
+TCP creates the first packet of the three-way handshake.
+
+Example:
+
+Source Port      : 52341
+Destination Port : 22
+Sequence Number  : 1000
+ACK Number       : 0
+Flags            : SYN
+Window Size      : 65535
+Checksum
+
+At this stage TCP only creates the segment.
+
+TCP does NOT know:
+
+MAC Address
+Gateway
+Router
+Switch
+
+It simply creates the TCP segment and passes it to the IP layer.
+
+#################### Step 3: IP Layer Adds the IP Header #################### 
+
+The Network Layer encapsulates the TCP segment inside an IP packet.
+
+Source IP      : 192.168.1.10
+Destination IP : 192.168.2.20
+TTL            : 64
+Protocol        : TCP
+
+Now the IP layer asks:
+
+Is 192.168.2.20 inside my subnet?
+
+My Network
+
+192.168.1.10/24
+
+Destination
+
+192.168.2.20/24
+
+Answer:
+
+NO
+
+Therefore IP decides:
+
+I cannot send directly to PC2.
+
+I must send this packet to my Default Gateway.
+
+192.168.1.1
+#################### Step 4: ARP for the Gateway #################### 
+
+PC1 knows:
+
+Gateway IP
+
+192.168.1.1
+
+But it does not know the MAC address.
+
+It sends an ARP Request.
+
+Who has 192.168.1.1 ?
+
+Tell 192.168.1.10
+
+Destination MAC
+
+FF:FF:FF:FF:FF:FF
+
+(Broadcast)
+
+The Switch receives the broadcast.
+
+Because ARP is a broadcast,
+
+the switch floods it to every port in VLAN 1.
+
+The Router replies:
+
+192.168.1.1 is
+
+AA:AA:AA:AA:AA:AA
+
+PC1 stores it inside the ARP Cache.
+
+#################### Step 5: Ethernet Frame is Created #################### 
+
+Now Layer 2 creates the Ethernet Frame.
+
+Ethernet Header
+
+Source MAC
+
+PC1 MAC
+
+Destination MAC
+
+Router MAC
+
+-------------------------
+
+Payload
+
+IP Packet
+
+↓
+
+TCP SYN
+
+Notice:
+
+IP Header
+Source IP 192.168.1.10
+Destination IP 192.168.2.20
+
+Never changes.
+
+Ethernet Header
+Source MAC PC1
+Destination MAC Router
+
+Changes at every routed hop.
+
+#################### Step 6: Switch Receives the Frame ####################
+
+The Switch only checks:
+
+Destination MAC
+
+It never checks:
+
+TCP
+IP
+SSH
+SCP
+
+The Switch looks inside its MAC Address Table.
+
+AA:AA:AA:AA:AA:AA
+
+↓
+
+Port 5
+
+It forwards the frame only to the Router.
+
+#################### Step 7: Router Receives the Frame ####################
+
+The Router receives the Ethernet frame.
+
+First it removes the Ethernet Header.
+
+Now it sees:
+
+Source IP
+
+192.168.1.10
+
+Destination IP
+
+192.168.2.20
+
+The Router performs:
+
+✔ Removes Ethernet Header
+
+✔ Checks Destination IP
+
+✔ Looks inside Routing Table
+
+✔ Finds Best Route
+
+✔ Decrements TTL
+
+64
+
+↓
+
+63
+
+✔ Recalculates IP Header Checksum
+
+✔ Selects Outgoing Interface
+
+Routing Table:
+
+192.168.2.0/24
+
+↓
+
+Outgoing Interface G0/1
+
+The Router decides:
+
+Forward this packet out of G0/1.
+#################### Step 8: Router Needs PC2's MAC ####################
+
+The Router knows:
+
+Destination IP 192.168.2.20
+
+But does not know:
+Destination MAC If PC2's MAC is not already in the ARP Cache,
+
+the Router sends:
+Who has
+192.168.2.20 ?
+PC2 replies:
+192.168.2.20 is
+BB:BB:BB:BB:BB:BB
+
+The Router stores it inside its ARP Cache.
+
+#################### Step 9: Router Creates a NEW Ethernet Frame #################### 
+
+The Router never forwards the old Ethernet Frame.
+
+It builds a completely new one.
+
+Ethernet Header
+
+Source MAC
+
+Router G0/1
+
+Destination MAC
+
+PC2
+
+Payload
+
+Same IP Packet
+
+Notice:
+
+The IP Header remains exactly the same.
+
+Source IP
+
+192.168.1.10
+
+Destination IP
+
+192.168.2.20
+
+Only the MAC addresses have changed.
+
+#################### Step 10: Second Switch #################### 
+
+The second Switch receives the frame.
+
+It checks only:
+
+Destination MAC
+
+Finds PC2 in its MAC Table.
+
+Forwards the frame only to PC2.
+
+#################### Step 11: PC2 Receives the SYN #################### 
+
+PC2 receives the frame.
+
+It removes the Ethernet Header.
+
+IP checks:
+
+Destination IP
+
+192.168.2.20
+
+↓
+
+This is my IP.
+
+The packet is passed to TCP.
+
+TCP checks:
+
+Destination Port
+
+22
+
+The operating system has an SSH server listening on TCP Port 22.
+
+TCP creates a new connection entry.
+
+TCP State becomes:
+
+SYN-RECEIVED
+#################### Step 12: TCP Three-Way Handshake #################### 
+
+PC2 sends:
+
+SYN + ACK
+
+The packet travels:
+
+PC2
+
+↓
+
+Switch
+
+↓
+
+Router
+
+↓
+
+Switch
+
+↓
+
+PC1
+
+At every router:
+
+Ethernet Header is removed.
+TTL is decremented.
+IP checksum is recalculated.
+A new Ethernet Header is created.
+
+PC1 receives the SYN-ACK.
+
+PC1 sends:
+
+ACK
+
+Again it travels through:
+
+PC1
+
+↓
+
+Switch
+
+↓
+
+Router
+
+↓
+
+Switch
+
+↓
+
+PC2
+
+Now both systems enter the TCP state:
+
+ESTABLISHED
+
+The TCP connection is now ready.
+
+#################### Step 13: SSH Starts
+
+Only after TCP is established does SSH begin.
+
+SSH performs:
+
+Version Exchange
+Algorithm Negotiation
+Key Exchange
+Server Authentication
+User Authentication
+Session Key Generation
+
+Now both systems have an encrypted channel.
+
+#################### Step 14: SCP Transfers the File
+
+SCP now sends:
+
+File Name
+File Size
+File Permissions
+File Data
+
+SSH encrypts all the data.
+
+TCP splits the encrypted data into multiple segments.
+
+Each segment follows the same path:
+
+PC1
+↓
+
+Switch
+↓
+
+Router
+↓
+
+Switch
+↓
+
+PC2
+
+PC2:
+
+TCP reassembles all segments.
+SSH decrypts the data.
+SCP reconstructs the original file.
+The operating system writes the file to the destination path.
+Interview Summary
+
+✅ Switch forwards using MAC addresses.
+
+✅ Router forwards using IP addresses.
+
+✅ ARP resolves an IP address to a MAC address on the local network.
+
+✅ TCP establishes a reliable connection using the three-way handshake.
+
+✅ SSH provides encryption and authentication.
+
+✅ SCP uses the secure SSH channel to transfer the file.
+
+✅ IP addresses remain the same end-to-end, while MAC addresses change at every routed hop. This is the exact flow you can explain confidently in networking interviews.
+
+
+
+
+
+
+
+
+
+##################################################################################################################################
+or a normal ping, the flow is simpler because ICMP is used instead of TCP/SSH/SCP. There is no TCP three-way handshake.
+
+                 LAN 1                         LAN 2
+
++---------+      +---------+          +---------+      +---------+      +---------+
+|  PC1    |------| Switch  |----------| Router  |------| Switch  |------|  PC2    |
+|192.168.1.10    |         |          |         |      |         |      |192.168.2.20
++---------+      +---------+          +---------+      +---------+      +---------+
+
+PC1 IP: 192.168.1.10/24
+PC2 IP: 192.168.2.20/24
+
+Default Gateway (PC1): 192.168.1.1
+Router G0/0: 192.168.1.1
+Router G0/1: 192.168.2.1
+#################### Step 1: User Starts Ping
+
+On PC1:
+
+ping 192.168.2.20
+
+At this point:
+
+Ping application starts.
+It requests the operating system to send an ICMP Echo Request.
+No packets have been sent yet.
+#################### Step 2: ICMP Creates an Echo Request
+
+ICMP creates an Echo Request message.
+
+Example:
+
+Type : 8 (Echo Request)
+Code : 0
+Identifier
+Sequence Number : 1
+Checksum
+Payload
+
+This ICMP message is passed to the IP layer.
+
+#################### Step 3: IP Layer Adds the IP Header
+
+IP creates the IP packet.
+
+Source IP      : 192.168.1.10
+Destination IP : 192.168.2.20
+TTL            : 64
+Protocol        : ICMP
+
+Now IP checks:
+
+Is 192.168.2.20 in my subnet?
+
+192.168.1.10/24
+
+↓
+
+192.168.1.0
+
+192.168.2.20/24
+
+↓
+
+192.168.2.0
+
+Answer:
+
+NO
+
+IP decides:
+
+Send the packet to the Default Gateway
+
+192.168.1.1
+#################### Step 4: ARP for the Gateway
+
+If the gateway MAC is not already in the ARP cache,
+
+PC1 sends:
+
+Who has 192.168.1.1 ?
+
+Tell 192.168.1.10
+
+Destination MAC:
+
+FF:FF:FF:FF:FF:FF
+
+The switch floods the ARP request.
+
+The router replies:
+
+192.168.1.1 is
+
+AA:AA:AA:AA:AA:AA
+
+PC1 stores it in the ARP cache.
+
+#################### Step 5: Ethernet Frame is Created
+
+Layer 2 creates:
+
+Ethernet Header
+
+Source MAC      : PC1
+Destination MAC : Router
+
+Payload
+
+IP Packet
+
+↓
+
+ICMP Echo Request
+
+Notice:
+
+IP Header
+
+Source IP      : 192.168.1.10
+Destination IP : 192.168.2.20
+
+Ethernet Header
+
+Source MAC      : PC1
+Destination MAC : Router
+#################### Step 6: Switch
+
+The switch checks:
+
+Destination MAC
+
+It forwards the frame to the router.
+
+#################### Step 7: Router
+
+The router:
+
+Removes the Ethernet header.
+Checks the destination IP.
+Looks up the routing table.
+Finds the outgoing interface.
+Decrements TTL (64 → 63).
+Recalculates the IP header checksum.
+
+If PC2's MAC is unknown,
+
+it sends an ARP request:
+
+Who has 192.168.2.20 ?
+
+PC2 replies with its MAC.
+
+#################### Step 8: Router Creates a New Ethernet Frame
+
+The router creates a new Ethernet frame.
+
+Source MAC      : Router G0/1
+Destination MAC : PC2
+
+Payload
+
+Same IP Packet
+
+↓
+
+ICMP Echo Request
+
+Only the MAC addresses change.
+
+The IP addresses remain:
+
+Source IP      : 192.168.1.10
+Destination IP : 192.168.2.20
+#################### Step 9: Second Switch
+
+The second switch checks the destination MAC.
+
+It forwards the frame to PC2.
+
+#################### Step 10: PC2 Receives the Packet
+
+PC2 removes the Ethernet header.
+
+IP checks:
+
+Destination IP
+
+↓
+
+192.168.2.20
+
+↓
+
+This is my IP.
+
+Since the protocol field is ICMP, IP passes the packet to ICMP.
+
+ICMP sees:
+
+Type = 8
+
+Echo Request
+
+PC2 generates an ICMP Echo Reply.
+
+#################### Step 11: ICMP Echo Reply
+
+PC2 creates:
+
+Type : 0 (Echo Reply)
+Code : 0
+Sequence Number : 1
+
+The reply follows the reverse path:
+
+PC2
+↓
+
+Switch
+
+↓
+
+Router
+
+↓
+
+Switch
+
+↓
+
+PC1
+
+At each router:
+
+Ethernet header is removed.
+TTL is decremented.
+IP checksum is recalculated.
+A new Ethernet header is created.
+#################### Step 12: PC1 Receives the Reply
+
+PC1 receives the ICMP Echo Reply.
+
+The Ping application displays:
+
+Reply from 192.168.2.20
+
+bytes=32
+
+time=2 ms
+
+TTL=63
+
+The ping is successful.
+
+Interview Summary
+Ping uses ICMP, not TCP or UDP.
+There is no TCP three-way handshake.
+The IP layer decides whether the destination is on the same subnet or a different subnet.
+ARP resolves the next-hop MAC address.
+Switches forward based on MAC addresses.
+Routers forward based on IP addresses, decrement TTL, and create a new Ethernet frame for each hop.
+IP addresses remain unchanged end-to-end, while MAC addresses change at every routed hop.

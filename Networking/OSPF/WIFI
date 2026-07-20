@@ -1,0 +1,185 @@
+Because Wi-Fi devices share transmission time, not bandwidth.
+
+
+PHY Rate
+radio transmission speed at Layer 1 (Physical Layer)
+PHY Rate Depends On
+1. Channel Width
+2. Modulation Scheme (MCS)
+3. Spatial Streams (MIMO)
+4. Guard Interval
+5. Signal Quality (RSSI/SNR)
+
+
+1. Co-Channel Contention (CCC)
+This is the normal behavior in Wi-Fi when multiple APs/devices use the same channel.
+Example:
+AP1 → Channel 36
+AP2 → Channel 36
+Both are using the same frequency.
+Wi-Fi uses CSMA/CA:
+Before transmitting, devices listen first.
+If AP1 is transmitting:
+AP2 waits
+clients wait
+So devices are sharing airtime politely.
+
+AP1  ))))))   AP2
+Both can hear each other
+→ Take turns
+
+2. Co-Channel Interference (CCI)
+This happens when devices on same channel cannot coordinate properly.
+Usually because:
+APs are too far apart
+hidden node problem
+weak RSSI
+overlapping coverage badly designed
+Bad Case → Interference
+Now AP1 and AP2 are far apart.
+AP1 cannot hear AP2 properly.
+So:
+AP1 starts transmitting
+AP2 ALSO starts transmitting
+Now at client location:
+both signals arrive together
+frames become unreadable
+
+This is interference.
+
+AP1  ))))     ((((  AP2
+Cannot hear properly
+→ Simultaneous transmission
+→ Corruption
+
+
+RSSI = Received Signal Strength Indicator
+It tells:
+How strong the received Wi-Fi signal is.
+Measured in:
+dBm
+Examples:
+-40 dBm → very strong
+-55 dBm → good
+-67 dBm → okay for voice/video
+-70 dBm → weak
+-80 dBm → very poor
+
+SNR = Signal to Noise Ratio
+It tells:
+How clean/good quality the signal is compared to noise.
+Formula:
+SNR=Signal Power−Noise Power
+Measured in:
+dB
+Simple Meaning
+Suppose:
+Signal = -40 dBm
+Noise = -90 dBm
+Then:
+SNR=(−40)−(−90)=50 dB
+50 dB SNR is excellent.
+
+
+OFDM:
+First Problem:
+Why Old Wireless Systems Were Inefficient
+Imagine old radio transmission:
+
+One large carrier frequency
+sending all data.
+
+Problem:
+interference affects whole signal
+reflections cause corruption
+high-speed transmission becomes difficult
+multipath destroys signal quality
+
+Old Single-Carrier Problem
+One large carrier:
+high symbol rate
+very sensitive to multipath
+reflections corrupt entire transmission
+This became major issue as speeds increased.
+
+OFDM Solution
+
+Instead of:
+one very fast carrier
+
+OFDM uses:
+MANY small slower subcarriers
+This is the key idea.
+
+Analogy
+
+Instead of:
+
+one truck carrying everything
+
+OFDM uses:
+many smaller trucks in parallel
+Why This Helps
+Each subcarrier:
+lower symbol rate
+more resistant to reflections
+more robust to multipath
+
+VERY Important Understanding
+
+OFDM does NOT mainly increase speed initially.
+Its BIGGEST advantage:
+robustness against multipath/interference
+This is critical understanding.
+
+Orthogonal Meaning
+Very important word.
+Orthogonal
+means:
+subcarriers do not interfere with each other
+even though closely packed.
+
+Why Important?
+
+Without orthogonality:
+subcarriers overlap destructively.
+Orthogonality allows:
+efficient spectrum usage
+dense packing
+high efficiency
+
+Subcarriers
+Each subcarrier:
+carries partial data
+modulated independently
+
+Examples:
+BPSK
+QPSK
+QAM
+
+So:
+modulation happens PER subcarrier
+Important Hidden Insight
+Even if few subcarriers affected by interference:
+whole transmission may still survive
+Huge reliability advantage.
+
+Guard Interval (GI)
+
+VERY important OFDM concept.
+Remember multipath echoes?
+
+OFDM adds:
+
+Guard Interval
+small waiting gap between symbols.
+Purpose:
+allow delayed reflections to die out
+before next symbol.
+Analogy
+Person speaks:
+HELLO ...pause...
+WORLD
+Pause prevents echo overlap.
+Same in OFDM.

@@ -1,0 +1,99 @@
+| Subnet | Meaning              |
+| ------ | -------------------- |
+| /24    | last octet = host    |
+| /16    | last 2 octets = host |
+
+| /8     | last 3 octets = host |
+| CIDR | Mask          | What to Compare            |
+| ---- | ------------- | -------------------------- |
+| /8   | 255.0.0.0     | First 8 bits (≈ 1 octet)   |
+| /16  | 255.255.0.0   | First 16 bits (≈ 2 octets) |
+| /24  | 255.255.255.0 | First 24 bits (≈ 3 octets) |
+
+
+TCP uses sequence numbers and acknowledgements to detect loss and retransmit missing segments.
+
+
+🔥 Complete Flow (When You Open a Website)
+🧠 Think like this always:
+1. DNS → "What is the IP?"
+2. TCP → "Let’s connect"
+3. HTTP/HTTPS → "Send request"
+4. Server → "Here is data"
+🔹 Step 1: DNS (Application Layer)
+You type: google.com
+DNS gives IP: 142.x.x.x
+🔹 Step 2: TCP Connection (Transport Layer)
+
+Client→Server:SYN
+Server→Client:SYN+ACK
+Client→Server:ACK
+
+👉 Connection established
+
+🔹 Step 3: HTTP/HTTPS Request
+GET /index.html
+🔹 Step 4: Server Responds
+200 OK → Website loads
+
+
+TCP
+    Data
+    ↓
+    Segment
+    ↓
+    Packet
+    ↓
+    Frame
+    ↓
+    Bits
+For UDP
+    Data
+    ↓
+    Datagram
+    ↓
+    Packet
+    ↓
+    Frame
+    ↓
+    Bits
+
+
+🎯 Memory Trick: "Meet → Agree → Start"
+
+Imagine two people talking over a walkie-talkie.
+
+Step 1: SYN = "Can we talk?"
+
+PC1: "Hi! I want to start a conversation."
+It also says: "My starting sequence number is 100."
+
+Step 2: SYN-ACK = "Yes, and here's my number."
+
+PC2: "Yes, I got your request."
+"My starting sequence number is 500."
+"I acknowledge your sequence number (101)."
+
+Step 3: ACK = "Great, let's begin!"
+
+PC1: "I received your sequence number."
+"I acknowledge it (501)."
+Now data transfer starts.
+
+One-line Memory Formula
+
+3-way handshake = Connect + Synchronize + Confirm
+
+Where:
+
+✅ Connect → Establish a reliable connection
+✅ Synchronize → Exchange initial sequence numbers
+✅ Confirm → Both sides are ready to send and receive data / Negotiate communication
+
+
+
+
+
+
+
+

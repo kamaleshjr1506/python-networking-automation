@@ -25,6 +25,15 @@ print(b)
 c   = a[::-1]
 print(c)
 
+a = "my name is kamalesh "
+b = ""
+a = a.split()
+for i in a:
+    b = b + i[::-1] + " "
+print(b)
+
+
+
 #Lambda
 x = lambda a:a+10
 print(x(5))
@@ -116,7 +125,7 @@ for i in a:
     if i not in c:
         c.append(i)
 for j in b:
-    if j not in c:
+    if j not in c:  
         c.append(j)
     else:
         c.remove(j)
@@ -138,6 +147,7 @@ for i in a:
 print(maxx)
 
 import datetime
+from sre_constants import FAILURE
 
 
 a = 0
@@ -312,3 +322,190 @@ for i in b:
         print(d[7],d[8])
 
  
+
+a = """192.168.1.45 - - [09/Jun/2026:10:14:22 +0000] "GET /images/logo.png HTTP/1.1" 404 1543
+2001:db8:85a3:8d3:1319:8a2e:370:7348 - - [09/Jun/2026:10:14:35 +0000] "POST /api/v1/login HTTP/1.1" 401 230
+10.0.0.12 - - [09/Jun/2026:10:15:01 +0000] "GET /checkout HTTP/1.1" 500 5230
+192.168.1.99 - - [09/Jun/2026:10:15:22 +0000] "GET /wp-admin/ HTTP/1.1" 403 412
+2001:db8:85a3:8d3:1319:8a2e:370:7348 - - [09/Jun/2026:10:16:05 +0000] "POST /api/v1/login HTTP/1.1" 401 230
+172.16.254.1 - - [09/Jun/2026:10:16:40 +0000] "GET /index.html HTTP/1.1" 404 1543
+10.0.0.12 - - [09/Jun/2026:10:17:12 +0000] "GET /checkout HTTP/1.1" 500 5230
+3a2f:6b88:fe12:0000:0000:0000:abcd:1234 - - [09/Jun/2026:10:17:55 +0000] "GET /api/v2/users HTTP/1.1" 503 1205
+192.168.1.45 - - [09/Jun/2026:10:18:10 +0000] "GET /images/favicon.ico HTTP/1.1" 404 1543
+2001:db8:85a3:8d3:1319:8a2e:370:7348 - - [09/Jun/2026:10:18:15 +0000] "POST /api/v1/login HTTP/1.1" 401 230
+10.0.0.12 - - [09/Jun/2026:10:19:00 +0000] "GET /checkout HTTP/1.1" 500 5230
+192.168.1.45 - - [09/Jun/2026:10:19:30 +0000] "GET /broken-link HTTP/1.1" 404 1543
+3a2f:6b88:fe12:0000:0000:0000:abcd:1234 - - [09/Jun/2026:10:20:02 +0000] "GET /api/v2/users HTTP/1.1" 503 1205
+172.16.254.1 - - [09/Jun/2026:10:20:15 +0000] "GET /hidden-directory HTTP/1.1" 403 412
+192.168.1.45 - - [09/Jun/2026:10:21:00 +0000] "GET /images/logo.png HTTP/1.1" 404 1543"""
+
+
+
+
+
+
+
+# when designing a system test plan for an enterprise switch deployed in a enterprise core layer,
+ 
+# how do you determine the scale limits (e.g., maximum VLANs, MAC table size, ARP table size)? 
+
+# How would you automate the validation of the system's behavior when these tables overflow ?
+
+error_codes = {404:"not found",401:"unautorized",403:"Fobidden",500:"internalservererror"}
+error_codes = [404,401,403,500]
+
+a = a.splitlines()
+for i in a:
+    b =i.split()
+    print(b)
+    # for i in error codes:
+    #     index = b.index(i)
+    # if b in error_codes:
+    #     print(b[0])
+            
+            
+
+#Find the missing number in a sequence of integers from 1 to n, where one number is missing. The input is a list of integers containing n-1 numbers from the range 1 to n.
+
+n = 10
+a = [1,2,3,4,5,6,7,8,10]
+expected_sum = n * (n + 1) // 2 
+actual_sum = sum(a)
+missing_number = expected_sum - actual_sum
+print("The missing number is:", missing_number)
+
+
+# Write a Python program that:
+# Takes a router IP address as input ip 
+# Validates the IP format
+# Pings the router to check reachability
+# Logs into the router using credentials stored in environment variables
+# Executes: show interfaces
+# Uses regex to verify that all interfaces are in “up/up” state
+# Returns:
+# SUCCESS if all interfaces are up
+# FAILURE otherwise
+
+
+import os
+a = os.environ.get("router_ip")
+print(a)
+
+
+
+a = [1,2,3,4,6,5,7,9,10]
+n = 100
+missing = []
+
+for i in range(1,n+1):
+    if i not in a:
+        missing.append(i)
+        
+print(missing)
+
+
+###### Second Largest Number in a List
+a = [25, 8, 45, 67, 89, 21, 89, 65]
+fla = a[0]
+sla = a[0]
+
+for i in a:
+    if i >fla:
+        fla = i
+for i in a:
+    if fla != i and i>sla:
+        sla = i
+print(sla)
+
+
+
+
+
+
+
+# ips = ["10.1.1.1","10.1.1.2","10.1.1.1","10.1.1.3","10.1.1.2"]
+ 
+# #output = {"10.1.1.1":2,"10.1.1.2":2,"10.1.1.3":1} 
+
+# b = {}
+
+# for i in ips:
+#     if i in b:
+#         b[i] +=1
+#     else:
+#         b[i] = 1
+        
+# print(b)
+
+# data=[10,20,10,30,20]
+# out = []
+# for i in data:
+#     if i not in out:
+#         out.append(i)
+# print(out)
+# import os
+# os.toch("file.xtx")
+
+
+
+# # with open("File.txt","r+") as f:
+# #     f.read()
+    
+    
+    
+# # Input  = "robot framework automation testing"
+
+# # a = Input.split()
+# # leenn = len(a[0])
+# # # print(leenn)
+
+# # for i in a:
+# #     tmp = 0
+# #     b = len(i)
+# #     #print(b)
+# #     if b > tmp:
+# #         tmp = b
+        
+# #     print(tmp)
+        
+    
+# # a = [1,2,3,4,5]
+
+
+# # data = {
+# #     "devices": [
+# #       {"hostname":"sw1","ip":"10.1.1.1"},
+# #       {"hostname":"sw2","ip":"10.1.1.2"},
+# #       {"hostname":"sw3","ip":"10.1.1.3"}
+# #     ]
+# # }
+
+# # len = len(data["devices"])
+# # print(data["devices"][0])
+# # aaaa = []
+# # for i in data["devices"]:
+# #     aaaa.append(i["hostname"])
+    
+# # print(aaaa)
+
+
+# import subprocess
+
+# ip = ["127.0.0.1","127.0.0.3","127.0.0.2"]
+
+# a= subprocess.run("ping google.com",capture_output = True,text = True)
+
+# print(a.returncode)
+    
+    
+    
+ 
+
+
+a = "robot is an automation2222 frameworkwdewceded"
+a = a.split()
+longe = a[0]
+for i in a:
+    if len(i) > len(longe):
+        longe = i
+print(longe)
